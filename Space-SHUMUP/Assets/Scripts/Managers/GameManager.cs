@@ -1,9 +1,9 @@
 /**** 
- * Created by: Akram Taghavi-Burris
+ * Created by: Garron Denney
  * Date Created: Feb 23, 2022
  * 
  * Last Edited by: NA
- * Last Edited: Feb 26, 2022
+ * Last Edited: March 30, 2022
  * 
  * Description: Basic GameManager Template
 ****/
@@ -68,7 +68,9 @@ public class GameManager : MonoBehaviour
     [SerializeField] //Access to private variables in editor
     private int numberOfLives; //set number of lives in the inspector
     [Tooltip("Does the level get reset when a life is lost")]
+
     public bool resetLostLevel; //reset the lost level
+    public float gameRestartDelay = 2f;//the amount of delay before restart
     //the amount of delay before restart
     static public int lives; // number of lives for player 
     public int Lives { get { return lives; } set { lives = value; } }//access to static variable lives [get/set methods]
@@ -286,6 +288,10 @@ public class GameManager : MonoBehaviour
     }//end NextLevel()
 
     //Delayed Restart
+    void DelayedRestart()
+    {
+        Invoke("StartGame", gameRestartDelay);
+    }
    
 
     //PLAYER LOST A LIFE
@@ -303,11 +309,12 @@ public class GameManager : MonoBehaviour
             //if this level resets when life is lost
             if (resetLostLevel){
                 numberOfLives = lives; //set lives left for level reset
-                
+                DelayedRestart();
             }//end if (resetLostLevel)
 
         } // end elseif
     }//end LostLife()
+
 
 
     //CHECK SCORE UPDATES

@@ -3,7 +3,7 @@
  * Date Created: March 21, 2022
  * 
  * Last Edited by: Garron Denney
- * Last Edited: March 21, 2022
+ * Last Edited: March 30, 2022
  * 
  * Description: Hero ship controller
 ****/
@@ -20,7 +20,8 @@ public class Hero : MonoBehaviour
 
     #region PlayerShip Singleton
     static public Hero SHIP; //refence GameManager
-   
+    public GameObject projectilePrefab;
+    public float projectileSpeed = 40;
     //Check to make sure only one gm of the GameManager is in the scene
     void CheckSHIPIsInScene()
     {
@@ -108,6 +109,10 @@ public class Hero : MonoBehaviour
 
         transform.rotation = Quaternion.Euler(xAxis * pitchMult, yAxis * pitchMult, 0);
 
+        if(Input.GetKeyDown(KeyCode.Space))
+        {
+            TempFire();
+        }//end space
     }//end Update()
 
 
@@ -117,10 +122,10 @@ public class Hero : MonoBehaviour
         Transform rootT = other.gameObject.transform.root;
         //Transform root returns the topmost transform in the heirarchy (i.e parent)
         GameObject go = rootT.gameObject; //gameObject of parent transform
-        if(go = lastTriggerGo) { return; }//don't do anything if it's the same object we last collided with
+        if(go == lastTriggerGo) { return; }//don't do anything if it's the same object we last collided with
         lastTriggerGo = go; //set the trigger to the last trigger
 
-        if(go.tag == "Enemy" )
+        if(go.tag == "Enemy")
         {
             Debug.Log("Triggered by Enemy " + other.gameObject.name);
             shieldLevel--;
@@ -135,5 +140,17 @@ public class Hero : MonoBehaviour
 
 
     }//end OnTriggerEnter()
+    
+    void TempFire()
+    {
+        GameObject projGO = Instantiate<GameObject>(projectilePrefab);
+        projGO.transform.position = transform.position;
+        Rigidbody rb = projGO.GetComponent<Rigidbody>();
+        rb.velocity = Vector3.up * projectileSpeed;
+    }//end TempFire
 
+    public void AddScore(int value)
+    {
+        gm.UpdateScore(value);
+    }
 }
